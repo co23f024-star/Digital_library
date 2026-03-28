@@ -25,16 +25,24 @@ Go to frontend folder:
 
 cd frontend
 npm install
+npm run dev
 
 If backend exists:
 
 cd backend
 npm install
+install dependencies: 1) pip install fastapi uvicorn
+                      2) pip install -r requirements.txt
+
 ▶️ Run the project
 Start frontend:
 npm run dev
-Start backend:
-node server.js
+
+
+### Start backend (FastAPI):
+cd backend
+uvicorn app.main:app --reload
+
 🔐 Environment Variables
 
 Create a .env file inside frontend & backend and add:
