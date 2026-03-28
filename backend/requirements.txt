@@ -4,3 +4,4 @@ python-dotenv
 pydantic
 google-auth
 requests
+python-jose[cryptography]
