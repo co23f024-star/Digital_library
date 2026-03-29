@@ -1,47 +1,38 @@
 import Layout from "../components/Layout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Books() {
 
+  const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [suggestions, setSuggestions] = useState([]);
 
-  const books = [
-    {
-      id: 1,
-      title: "Cloud Computing Essentials",
-      author: "John Smith",
-      category: "Cloud Computing",
-      pdf: "/sample.pdf",
-    },
-    {
-      id: 2,
-      title: "Artificial Intelligence Basics",
-      author: "David Lee",
-      category: "Artificial Intelligence",
-      pdf: "/sample.pdf",
-    },
-    {
-      id: 3,
-      title: "Data Structures",
-      author: "Alan Walker",
-      category: "Computer Science",
-      pdf: "/sample.pdf",
-    },
-  ];
+  // 🔥 Backend Base URL
+  const BASE_URL = "https://digital-library-wtvm.onrender.com";
 
+  // ✅ Fetch books from backend
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/books`)
+      .then((res) => {
+        setBooks(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching books:", err);
+      });
+  }, []);
+
+  // 🔹 Dynamic categories from backend
   const categories = [
     "All",
-    "Computer Science",
-    "Artificial Intelligence",
-    "Cloud Computing",
+    ...new Set(books.map((book) => book.department)),
   ];
 
   /* SEARCH HANDLER */
 
   const handleSearch = (text) => {
-
     setSearch(text);
 
     if (text === "") {
@@ -54,7 +45,7 @@ function Books() {
       book.author.toLowerCase().includes(text.toLowerCase())
     );
 
-    setSuggestions(filtered.slice(0,5));
+    setSuggestions(filtered.slice(0, 5));
   };
 
   /* FILTER BOOKS */
@@ -62,7 +53,7 @@ function Books() {
   const filteredBooks = books.filter((book) => {
 
     const matchCategory =
-      category === "All" || book.category === category;
+      category === "All" || book.department === category;
 
     const matchSearch =
       book.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -73,7 +64,7 @@ function Books() {
 
   return (
 
-    <Layout onSearch={(text)=>handleSearch(text)}>
+    <Layout onSearch={(text) => handleSearch(text)}>
 
       {/* HEADER */}
 
@@ -95,11 +86,11 @@ function Books() {
 
         <div className="bg-white shadow rounded mb-6">
 
-          {suggestions.map((book)=>(
+          {suggestions.map((book) => (
             <div
-              key={book.id}
+              key={book._id}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={()=>{
+              onClick={() => {
                 setSearch(book.title);
                 setSuggestions([]);
               }}
@@ -149,11 +140,16 @@ function Books() {
           {filteredBooks.map((book) => (
 
             <div
-              key={book.id}
+              key={book._id}
               className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition"
             >
 
-              <div className="h-36 bg-gray-200 rounded mb-3"></div>
+              {/* ✅ BOOK IMAGE */}
+              <img
+                src={`${BASE_URL}${book.cover_url}`}
+                alt={book.title}
+                className="h-36 w-full object-cover rounded mb-3"
+              />
 
               <h3 className="text-sm font-semibold text-gray-800">
                 {book.title}
@@ -163,9 +159,11 @@ function Books() {
                 {book.author}
               </p>
 
+              {/* ✅ DOWNLOAD PDF */}
               <a
-                href={book.pdf}
-                download
+                href={`${BASE_URL}${book.pdf_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block text-center bg-blue-600 text-white text-sm py-2 rounded hover:bg-blue-700"
               >
                 Download PDF
