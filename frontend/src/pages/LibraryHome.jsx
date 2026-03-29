@@ -48,12 +48,10 @@ function LibraryHome() {
     setSelectedDept(null);
   };
 
-  const searchedBooks = books.filter(book => {
-    return (
-      book.title.toLowerCase().includes(searchText) &&
-      (searchDept === "All" || book.department === searchDept)
-    );
-  });
+  const searchedBooks = books.filter(book =>
+    book.title.toLowerCase().includes(searchText) &&
+    (searchDept === "All" || book.department === searchDept)
+  );
 
   /* ================= DOWNLOAD ================= */
   const handleDownload = async (pdfUrl, title) => {
@@ -69,7 +67,6 @@ function LibraryHome() {
     link.click();
   };
 
-  /* ✅ IMPORTANT: MATCH YOUR DATABASE VALUES */
   const departments = [
     "Computer Engineering",
     "Computer Science",
@@ -87,26 +84,27 @@ function LibraryHome() {
     return (
       <Layout onSearch={handleNavbarSearch}>
 
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between mb-10">
           <h2 className="text-3xl font-bold">{selectedDept}</h2>
 
-          <button
-            onClick={() => setSelectedDept(null)}
-            className="text-blue-600"
-          >
+          <button onClick={() => setSelectedDept(null)}>
             ← Back
           </button>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-6">
-          {deptBooks.map(book => (
-            <BookCard
-              key={book._id}
-              book={book}
-              onClick={() => setSelectedBook(book)}
-            />
-          ))}
-        </div>
+        {deptBooks.length === 0 ? (
+          <p>No books found.</p>
+        ) : (
+          <div className="grid md:grid-cols-4 gap-6">
+            {deptBooks.map(book => (
+              <BookCard
+                key={book._id}
+                book={book}
+                onClick={() => setSelectedBook(book)}
+              />
+            ))}
+          </div>
+        )}
 
         {selectedBook && (
           <BookModal
@@ -125,58 +123,33 @@ function LibraryHome() {
     <Layout onSearch={handleNavbarSearch}>
 
       {/* SLIDER */}
-      <div className="relative h-[350px] mb-14 rounded-3xl overflow-hidden">
+      <div className="relative h-[350px] mb-14 overflow-hidden">
         {slides.map((img, i) => (
           <img
             key={i}
             src={img}
-            className={`absolute w-full h-full object-cover transition ${
+            className={`absolute w-full h-full object-cover ${
               i === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
       </div>
 
-      {/* RECENTLY */}
-      <div className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Recently Uploaded</h2>
+      {/* 🔥 SEARCH RESULT SECTION */}
+      {searchText ? (
 
-        <div className="flex gap-6 overflow-x-auto">
-          {books.slice(0, 10).map(book => (
-            <BookCard
-              key={book._id}
-              book={book}
-              onClick={() => setSelectedBook(book)}
-            />
-          ))}
-        </div>
-      </div>
+        <>
+          <h2 className="text-2xl font-bold mb-6">
+            Search Results
+          </h2>
 
-      {/* 🔥 DEPARTMENT SECTIONS */}
-      {departments.map(dept => {
-
-        const deptBooks = books.filter(
-          book => book.department === dept
-        );
-
-        if (deptBooks.length === 0) return null;
-
-        return (
-          <div key={dept} className="mb-16">
-
-            <div className="flex justify-between mb-4">
-              <h2 className="text-2xl font-bold">{dept}</h2>
-
-              <button
-                onClick={() => setSelectedDept(dept)}
-                className="text-blue-600"
-              >
-                View All →
-              </button>
-            </div>
-
-            <div className="flex gap-6 overflow-x-auto">
-              {deptBooks.slice(0, 8).map(book => (
+          {searchedBooks.length === 0 ? (
+            <p className="text-center text-gray-500">
+              No books found.
+            </p>
+          ) : (
+            <div className="grid md:grid-cols-4 gap-6">
+              {searchedBooks.map(book => (
                 <BookCard
                   key={book._id}
                   book={book}
@@ -184,10 +157,67 @@ function LibraryHome() {
                 />
               ))}
             </div>
+          )}
+        </>
 
+      ) : (
+
+        <>
+          {/* RECENTLY */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-6">
+              Recently Uploaded
+            </h2>
+
+            <div className="flex gap-6 overflow-x-auto">
+              {books.slice(0, 10).map(book => (
+                <BookCard
+                  key={book._id}
+                  book={book}
+                  onClick={() => setSelectedBook(book)}
+                />
+              ))}
+            </div>
           </div>
-        );
-      })}
+
+          {/* DEPARTMENTS */}
+          {departments.map(dept => {
+
+            const deptBooks = books.filter(
+              book => book.department === dept
+            );
+
+            if (deptBooks.length === 0) return null;
+
+            return (
+              <div key={dept} className="mb-16">
+
+                <div className="flex justify-between mb-4">
+                  <h2 className="text-2xl font-bold">{dept}</h2>
+
+                  <button
+                    onClick={() => setSelectedDept(dept)}
+                    className="text-blue-600"
+                  >
+                    View All →
+                  </button>
+                </div>
+
+                <div className="flex gap-6 overflow-x-auto">
+                  {deptBooks.slice(0, 8).map(book => (
+                    <BookCard
+                      key={book._id}
+                      book={book}
+                      onClick={() => setSelectedBook(book)}
+                    />
+                  ))}
+                </div>
+
+              </div>
+            );
+          })}
+        </>
+      )}
 
       {/* MODAL */}
       {selectedBook && (
