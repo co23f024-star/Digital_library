@@ -28,7 +28,6 @@ function AdminDashboard() {
     "Electrical Engineering",
   ];
 
-  /* ================= FETCH BOOKS ================= */
   const fetchBooks = async () => {
     try {
       const res = await axios.get(`${API}/books/`);
@@ -42,13 +41,11 @@ function AdminDashboard() {
     fetchBooks();
   }, []);
 
-  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
 
-  /* ================= INPUT CHANGE ================= */
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
@@ -57,14 +54,12 @@ function AdminDashboard() {
     }));
   };
 
-  /* ================= ADD ================= */
   const handleAddNew = () => {
     setEditingId(null);
     setFormData(EMPTY_FORM);
     setShowModal(true);
   };
 
-  /* ================= EDIT ================= */
   const handleEdit = (book) => {
     setEditingId(book._id);
     setFormData({
@@ -77,7 +72,6 @@ function AdminDashboard() {
     setShowModal(true);
   };
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     if (!formData.title || !formData.author) {
       alert("Title & Author required");
@@ -115,7 +109,6 @@ function AdminDashboard() {
     }
   };
 
-  /* ================= DELETE ================= */
   const handleDelete = async (bookId) => {
     if (!window.confirm("Delete this book permanently?")) return;
 
@@ -127,7 +120,6 @@ function AdminDashboard() {
     }
   };
 
-  /* ================= FILTER ================= */
   const filteredBooks = books.filter((b) => {
     const deptOk =
       selectedDept === "All Departments" ||
@@ -140,19 +132,19 @@ function AdminDashboard() {
     return deptOk && searchOk;
   });
 
-  /* ================= COUNTS ================= */
   const getCount = (dept) =>
     books.filter((b) => b.department === dept).length;
 
   const totalBooks = books.length;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8"> {/* ✅ responsive */}
 
-      {/* ================= NAVBAR ================= */}
-      <div className="bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 px-8 py-5 rounded-2xl shadow-xl mb-10 flex justify-between items-center text-white">
+      {/* NAVBAR */}
+      <div className="bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 px-4 sm:px-8 py-5 rounded-2xl shadow-xl mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white"> {/* ✅ responsive */}
+        
         <div>
-          <h1 className="text-2xl font-extrabold">
+          <h1 className="text-xl sm:text-2xl font-extrabold"> {/* ✅ */}
             📚 Admin Dashboard
           </h1>
           <p className="text-sm opacity-80">
@@ -160,26 +152,25 @@ function AdminDashboard() {
           </p>
         </div>
 
-        <div className="flex gap-5">
+        <div className="flex gap-3 sm:gap-5 w-full sm:w-auto"> {/* ✅ */}
           <button
             onClick={handleAddNew}
-            className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg shadow-md"
+            className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg shadow-md"
           >
             + Add Book
           </button>
 
           <button
             onClick={handleLogout}
-            className="bg-blue-700 hover:bg-blue-800 px-5 py-2 rounded-lg shadow-md"
+            className="flex-1 sm:flex-none bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg shadow-md"
           >
             Logout
           </button>
         </div>
       </div>
 
-      {/* ================= COUNTS SECTION ================= */}
-      <div className="grid grid-cols-5 gap-6 mb-10">
-
+      {/* COUNTS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10"> {/* ✅ */}
         <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-t-4 border-green-600">
           <h2 className="text-lg font-semibold text-gray-600">
             Total Books
@@ -206,19 +197,19 @@ function AdminDashboard() {
           ))}
       </div>
 
-      {/* ================= SEARCH & FILTER ================= */}
-      <div className="flex justify-between mb-6">
+      {/* SEARCH */}
+      <div className="flex flex-col sm:flex-row gap-3 justify-between mb-6"> {/* ✅ */}
         <input
           placeholder="Search by title..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border px-4 py-2 rounded-lg w-1/3 shadow-sm"
+          className="border px-4 py-2 rounded-lg w-full sm:w-1/3 shadow-sm"
         />
 
         <select
           value={selectedDept}
           onChange={(e) => setSelectedDept(e.target.value)}
-          className="border px-4 py-2 rounded-lg shadow-sm"
+          className="border px-4 py-2 rounded-lg shadow-sm w-full sm:w-auto"
         >
           {departments.map((d) => (
             <option key={d}>{d}</option>
@@ -226,9 +217,9 @@ function AdminDashboard() {
         </select>
       </div>
 
-      {/* ================= TABLE ================= */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <table className="w-full">
+      {/* TABLE */}
+      <div className="bg-white rounded-2xl shadow-lg overflow-x-auto"> {/* ✅ scroll */}
+        <table className="w-full min-w-[600px]"> {/* ✅ */}
           <thead className="bg-gray-200">
             <tr>
               <th className="p-4 text-left">Cover</th>
@@ -238,14 +229,16 @@ function AdminDashboard() {
               <th className="p-4 text-left">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {filteredBooks.length === 0 && (
-  <tr>
-    <td colSpan="5" className="text-center p-6">
-      No books found
-    </td>
-  </tr>
-)}
+              <tr>
+                <td colSpan="5" className="text-center p-6">
+                  No books found
+                </td>
+              </tr>
+            )}
+
             {filteredBooks.map((book) => (
               <tr key={book._id} className="border-t hover:bg-gray-50">
                 <td className="p-4">
@@ -258,32 +251,33 @@ function AdminDashboard() {
                 <td className="p-4">{book.title}</td>
                 <td className="p-4">{book.author}</td>
                 <td className="p-4">{book.department}</td>
+
                 <td className="p-4">
-  <div className="flex items-center gap-2">
-    <button
-      onClick={() =>
-        window.open(`${API}${book.pdf_url}`, "_blank")
-      }
-      className="px-2 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded-md"
-    >
-      View
-    </button>
+                  <div className="flex flex-wrap gap-2"> {/* ✅ */}
+                    <button
+                      onClick={() =>
+                        window.open(`${API}${book.pdf_url}`, "_blank")
+                      }
+                      className="px-2 py-1 text-xs bg-green-600 text-white rounded-md"
+                    >
+                      View
+                    </button>
 
-    <button
-      onClick={() => handleEdit(book)}
-      className="px-2 py-1 text-xs bg-yellow-500 hover:bg-yellow-600 text-white rounded-md"
-    >
-      Edit
-    </button>
+                    <button
+                      onClick={() => handleEdit(book)}
+                      className="px-2 py-1 text-xs bg-yellow-500 text-white rounded-md"
+                    >
+                      Edit
+                    </button>
 
-    <button
-      onClick={() => handleDelete(book._id)}
-      className="px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded-md"
-    >
-      Delete
-    </button>
-  </div>
-</td>
+                    <button
+                      onClick={() => handleDelete(book._id)}
+                      className="px-2 py-1 text-xs bg-red-500 text-white rounded-md"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

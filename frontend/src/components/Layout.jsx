@@ -21,8 +21,8 @@ function Layout({ children, onSearch }) {
   return (
     <div className="min-h-screen bg-gray-100">
 
-      {/* ================= PREMIUM COOL STICKY NAVBAR ================= */}
-      <nav className="sticky top-0 z-50 bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 shadow-2xl px-10 py-5 flex justify-between items-center text-white">
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 bg-gradient-to-r from-blue-950 via-indigo-900 to-blue-900 shadow-2xl px-4 sm:px-10 py-4 sm:py-5 flex flex-col lg:flex-row justify-between items-center gap-4 text-white"> {/* ✅ */}
 
         {/* LEFT - LOGO */}
         <div
@@ -30,9 +30,9 @@ function Layout({ children, onSearch }) {
             navigate("/home", { replace: true });
             window.location.reload();
           }}
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none text-center lg:text-left"
         >
-          <h1 className="text-2xl font-extrabold tracking-wide hover:opacity-80 transition">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-wide hover:opacity-80 transition"> {/* ✅ */}
             📚 Digital Library
           </h1>
           <p className="text-xs opacity-80">
@@ -41,16 +41,16 @@ function Layout({ children, onSearch }) {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full lg:w-auto"> {/* ✅ */}
 
-          {/* ================= PREMIUM SEARCH BAR ================= */}
-          <div className="flex items-center bg-blue-900 rounded-xl overflow-hidden shadow-lg border border-blue-700">
+          {/* SEARCH BAR */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-blue-900 rounded-xl overflow-hidden shadow-lg border border-blue-700 w-full lg:w-auto"> {/* ✅ */}
 
             {/* Department Dropdown */}
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="bg-blue-900 text-white px-4 py-2 outline-none border-r border-blue-700"
+              className="bg-blue-900 text-white px-3 sm:px-4 py-2 outline-none border-b sm:border-b-0 sm:border-r border-blue-700 text-sm sm:text-base"
             >
               <option value="All">All Departments</option>
               <option value="Computer Engineering">Computer Engineering</option>
@@ -77,7 +77,7 @@ function Layout({ children, onSearch }) {
                   handleSearch();
                 }
               }}
-              className="px-4 py-2 w-72 bg-blue-900 text-white placeholder-gray-300 outline-none"
+              className="px-3 sm:px-4 py-2 w-full sm:w-60 md:w-72 bg-blue-900 text-white placeholder-gray-300 outline-none text-sm sm:text-base"
             />
 
             {/* Search Button */}
@@ -93,7 +93,7 @@ function Layout({ children, onSearch }) {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="bg-blue-700 hover:bg-blue-800 px-5 py-2 rounded-lg transition-all duration-300 shadow-md hover:scale-105"
+            className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 px-4 sm:px-5 py-2 text-sm sm:text-base rounded-lg transition-all duration-300 shadow-md hover:scale-105"
           >
             Logout
           </button>
@@ -101,8 +101,8 @@ function Layout({ children, onSearch }) {
         </div>
       </nav>
 
-      {/* ================= PAGE CONTENT ================= */}
-      <div className="px-10 py-8">
+      {/* PAGE CONTENT */}
+      <div className="px-4 sm:px-10 py-6 sm:py-8"> {/* ✅ */}
         {children}
       </div>
 

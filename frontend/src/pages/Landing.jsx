@@ -26,15 +26,13 @@ function Landing() {
   const handleCredentialResponse = async (response) => {
     try {
       const res = await axios.post(
-        "https://digital-library-wtvm.onrender.com/auth/google-login",  // ✅ CORRECT URL
+        "https://digital-library-wtvm.onrender.com/auth/google-login",
         { idToken: response.credential }
       );
 
-      // Save token & user
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      // Redirect by role
       if (res.data.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -48,7 +46,7 @@ function Landing() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center text-white">
+    <div className="relative min-h-screen flex items-center justify-center text-white px-4"> {/* ✅ */}
 
       {/* Background */}
       <div
@@ -59,18 +57,20 @@ function Landing() {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
-      <div className="relative text-center backdrop-blur-sm px-10 py-12 rounded-2xl">
-        <h1 className="text-6xl font-black mb-4 text-blue-300 drop-shadow-lg">
+      <div className="relative text-center backdrop-blur-sm px-4 sm:px-10 py-8 sm:py-12 rounded-2xl w-full max-w-xl"> {/* ✅ */}
+
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4 text-blue-300 drop-shadow-lg leading-tight"> {/* ✅ */}
           DIGITAL LIBRARY
         </h1>
 
-        <p className="text-2xl font-bold mb-10 text-indigo-200">
+        <p className="text-sm sm:text-xl md:text-2xl font-bold mb-6 sm:mb-10 text-indigo-200"> {/* ✅ */}
           Secure Cloud-Based Library for YBIT Students & Staff
         </p>
 
         <div className="flex justify-center">
-          <div id="googleBtn"></div>
+          <div id="googleBtn" className="scale-90 sm:scale-100"></div> {/* ✅ */}
         </div>
+
       </div>
     </div>
   );

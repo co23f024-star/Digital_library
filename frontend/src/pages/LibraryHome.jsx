@@ -25,6 +25,13 @@ function LibraryHome() {
 
   const slides = [slide1, slide2, slide3, slide4, slide5];
 
+  const departments = [
+    "Computer Engineering",
+    "Computer Science",
+    "Mechanical Engineering",
+    "Electrical Engineering",
+  ];
+
   /* ================= SLIDER ================= */
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,14 +49,14 @@ function LibraryHome() {
   }, []);
 
   /* ================= SEARCH ================= */
-  const handleNavbarSearch = (text, dept) => {
-    setSearchText(text.toLowerCase());
+  const handleNavbarSearch = (text, dept = "All") => {
+    setSearchText((text || "").toLowerCase());
     setSearchDept(dept);
     setSelectedDept(null);
   };
 
   const searchedBooks = books.filter(book =>
-    book.title.toLowerCase().includes(searchText) &&
+    (book.title || "").toLowerCase().includes(searchText) &&
     (searchDept === "All" || book.department === searchDept)
   );
 
@@ -67,79 +74,26 @@ function LibraryHome() {
     link.click();
   };
 
-  const departments = [
-    "Computer Engineering",
-    "Computer Science",
-    "Mechanical Engineering",
-    "Electrical Engineering",
-  ];
-
-  /* ================= DEPARTMENT PAGE ================= */
-  if (selectedDept) {
-
-    const deptBooks = books.filter(
-      book => book.department === selectedDept
-    );
-
-    return (
-      <Layout onSearch={handleNavbarSearch}>
-
-        <div className="flex justify-between mb-10">
-          <h2 className="text-3xl font-bold">{selectedDept}</h2>
-
-          <button onClick={() => setSelectedDept(null)}>
-            ← Back
-          </button>
-        </div>
-
-        {deptBooks.length === 0 ? (
-          <p>No books found.</p>
-        ) : (
-          <div className="grid md:grid-cols-4 gap-6">
-            {deptBooks.map(book => (
-              <BookCard
-                key={book._id}
-                book={book}
-                onClick={() => setSelectedBook(book)}
-              />
-            ))}
-          </div>
-        )}
-
-        {selectedBook && (
-          <BookModal
-            book={selectedBook}
-            onClose={() => setSelectedBook(null)}
-            onDownload={handleDownload}
-          />
-        )}
-
-      </Layout>
-    );
-  }
-
-  /* ================= MAIN PAGE ================= */
   return (
     <Layout onSearch={handleNavbarSearch}>
 
       {/* SLIDER */}
-      <div className="relative h-[350px] mb-14 overflow-hidden">
+      <div className="relative h-[180px] sm:h-[250px] md:h-[350px] mb-10 sm:mb-14 overflow-hidden">
         {slides.map((img, i) => (
           <img
             key={i}
             src={img}
-            className={`absolute w-full h-full object-cover ${
+            className={`absolute w-full h-full object-cover transition-opacity duration-700 ${
               i === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
       </div>
 
-      {/* 🔥 SEARCH RESULT SECTION */}
+      {/* SEARCH RESULT */}
       {searchText ? (
-
         <>
-          <h2 className="text-2xl font-bold mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-6">
             Search Results
           </h2>
 
@@ -148,7 +102,7 @@ function LibraryHome() {
               No books found.
             </p>
           ) : (
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
               {searchedBooks.map(book => (
                 <BookCard
                   key={book._id}
@@ -159,17 +113,15 @@ function LibraryHome() {
             </div>
           )}
         </>
-
       ) : (
-
         <>
           {/* RECENTLY */}
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-6">
+          <div className="mb-10 sm:mb-16">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
               Recently Uploaded
             </h2>
 
-            <div className="flex gap-6 overflow-x-auto">
+            <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-2">
               {books.slice(0, 10).map(book => (
                 <BookCard
                   key={book._id}
@@ -190,20 +142,22 @@ function LibraryHome() {
             if (deptBooks.length === 0) return null;
 
             return (
-              <div key={dept} className="mb-16">
+              <div key={dept} className="mb-10 sm:mb-16">
 
-                <div className="flex justify-between mb-4">
-                  <h2 className="text-2xl font-bold">{dept}</h2>
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <h2 className="text-lg sm:text-2xl font-bold">
+                    {dept}
+                  </h2>
 
                   <button
                     onClick={() => setSelectedDept(dept)}
-                    className="text-blue-600"
+                    className="text-blue-600 text-sm sm:text-base"
                   >
                     View All →
                   </button>
                 </div>
 
-                <div className="flex gap-6 overflow-x-auto">
+                <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-2">
                   {deptBooks.slice(0, 8).map(book => (
                     <BookCard
                       key={book._id}
@@ -232,48 +186,63 @@ function LibraryHome() {
   );
 }
 
+
 /* ================= BOOK CARD ================= */
 function BookCard({ book, onClick }) {
   return (
-    <div onClick={onClick} className="min-w-[200px] cursor-pointer">
+    <div onClick={onClick} className="min-w-[140px] sm:min-w-[180px] md:min-w-[200px] cursor-pointer">
 
       <img
         src={`${BASE_URL}${book.cover_url}`}
-        className="h-32 w-full object-cover rounded"
+        className="h-24 sm:h-28 md:h-32 w-full object-cover rounded"
       />
 
-      <h3 className="font-bold">{book.title}</h3>
-      <p className="text-sm text-gray-500">{book.author}</p>
-      <p className="text-xs text-blue-600">{book.department}</p>
+      <h3 className="font-bold text-sm sm:text-base line-clamp-1">
+        {book.title}
+      </h3>
+
+      <p className="text-xs sm:text-sm text-gray-500">
+        {book.author}
+      </p>
+
+      <p className="text-xs text-blue-600">
+        {book.department}
+      </p>
 
     </div>
   );
 }
 
+
 /* ================= MODAL ================= */
 function BookModal({ book, onClose, onDownload }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
 
-      <div className="bg-white p-6 w-[400px]">
+      <div className="bg-white p-4 sm:p-6 w-full max-w-sm sm:max-w-md rounded-lg">
 
-        <button onClick={onClose}>✖</button>
+        <button onClick={onClose} className="mb-2 text-right w-full">
+          ✖
+        </button>
 
         <img
           src={`${BASE_URL}${book.cover_url}`}
-          className="w-full h-60 object-cover"
+          className="w-full h-40 sm:h-52 md:h-60 object-cover rounded"
         />
 
-        <h3>{book.title}</h3>
-        <p>{book.author}</p>
+        <h3 className="text-lg sm:text-xl font-bold mt-3">
+          {book.title}
+        </h3>
 
-        <div className="flex gap-2 mt-4">
+        <p className="text-sm text-gray-600">{book.author}</p>
+
+        <div className="flex flex-col sm:flex-row gap-2 mt-4">
 
           <button
             onClick={() =>
               window.open(`${BASE_URL}${book.pdf_url}`)
             }
-            className="bg-green-600 text-white px-4 py-2"
+            className="bg-green-600 text-white px-4 py-2 rounded w-full"
           >
             View
           </button>
@@ -282,7 +251,7 @@ function BookModal({ book, onClose, onDownload }) {
             onClick={() =>
               onDownload(book.pdf_url, book.title)
             }
-            className="bg-blue-600 text-white px-4 py-2"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
           >
             Download
           </button>

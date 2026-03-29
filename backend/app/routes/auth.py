@@ -14,7 +14,12 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 if not GOOGLE_CLIENT_ID:
     raise RuntimeError("GOOGLE_CLIENT_ID is not set in .env file")
 
-ADMIN_EMAIL = "nagolkarrahul88@gmail.com"
+
+# ✅ MULTIPLE ADMINS
+ADMIN_EMAILS = [
+    "nagolkarrahul88@gmail.com",
+    "yourfriend@gmail.com"  # 👈 add more here
+]
 
 
 @router.post("/google-login")
@@ -22,9 +27,13 @@ async def google_login(data: dict):
     id_token_value = data.get("idToken")
 
     if not id_token_value:
-        raise HTTPException(status_code=400, detail="Missing Google ID token")
+        raise HTTPException(
+            status_code=400,
+            detail="Missing Google ID token"
+        )
 
     try:
+        # ✅ VERIFY GOOGLE TOKEN
         idinfo = id_token.verify_oauth2_token(
             id_token_value,
             requests.Request(),
@@ -40,14 +49,13 @@ async def google_login(data: dict):
                 detail="Invalid Google token payload"
             )
 
-        # Normalize email
+        # ✅ NORMALIZE EMAIL
         email = email.strip().lower()
 
-        # Admin check
-        if email == ADMIN_EMAIL.lower():
+        # ✅ ROLE LOGIC
+        if email in [e.lower() for e in ADMIN_EMAILS]:
             role = "admin"
 
-        # YBIT domain check
         elif email.endswith("@ybit.ac.in"):
             role = "user"
 
@@ -57,6 +65,7 @@ async def google_login(data: dict):
                 detail="Only YBIT emails allowed"
             )
 
+        # ✅ CREATE JWT
         jwt_token = create_token({
             "email": email,
             "name": name,
