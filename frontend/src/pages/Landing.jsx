@@ -26,7 +26,7 @@ function Landing() {
   const handleCredentialResponse = async (response) => {
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/auth/google-login",  // ✅ CORRECT URL
+        "https://digital-library-wtvm.onrender.com/auth/google-login",  // ✅ CORRECT URL
         { idToken: response.credential }
       );
 
