@@ -25,9 +25,11 @@ app = FastAPI(
 # CORS CONFIGURATION
 # =====================================================
 
+from fastapi.middleware.cors import CORSMiddleware
+
 origins = [
-    "https://digital-library-wtvm.onrender.com",
     "http://127.0.0.1:5173",
+    "http://localhost:5173",
     "https://amazing-churros-9d1905.netlify.app"
 ]
 
@@ -35,8 +37,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],   # VERY IMPORTANT
+    allow_headers=["*"],   # VERY IMPORTANT
 )
 
 
