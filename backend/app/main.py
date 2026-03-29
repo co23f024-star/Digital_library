@@ -26,9 +26,9 @@ app = FastAPI(
 # =====================================================
 
 origins = [
-    "http://localhost:5173",
+    "https://digital-library-wtvm.onrender.com",
     "http://127.0.0.1:5173",
-    "https://amazing-churros-9d1905.netlify.app/",
+    "https://amazing-churros-9d1905.netlify.app"
 ]
 
 app.add_middleware(
