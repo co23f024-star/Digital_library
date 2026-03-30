@@ -18,7 +18,7 @@ if not GOOGLE_CLIENT_ID:
 # ✅ MULTIPLE ADMINS
 ADMIN_EMAILS = [
     "nagolkarrahul88@gmail.com",
-    "yourfriend@gmail.com"  # 👈 add more here
+    "athravapalav022@gmail.com"  # 👈 add more here
 ]
 
 
